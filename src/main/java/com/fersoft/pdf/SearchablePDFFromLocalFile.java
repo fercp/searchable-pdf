@@ -150,5 +150,4 @@ public class SearchablePDFFromLocalFile {
         PutObjectRequest putRequest = new PutObjectRequest(bucketName, file.getFileName().toString(), baInputStream, metadata);
         s3client.putObject(putRequest);
     }
-
 }

@@ -30,7 +30,8 @@ public class SearchablePDF {
                             try {
                                 localPdf.run(args[0], p, Paths.get(args[2], p.getFileName().toString()));
                             } catch (IOException e) {
-                                logger.error("Exception during textract");
+                                e.printStackTrace();
+                                logger.error("Exception during textract",e);
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
                                 logger.error("Exception during textract");
