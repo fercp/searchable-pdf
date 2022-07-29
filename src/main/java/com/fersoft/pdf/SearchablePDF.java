@@ -15,7 +15,7 @@ public class SearchablePDF {
 
     public static void main(String[] args) throws IOException {
         if (args.length < 3) {
-            logger.error("Usage:java SearchablePDF <s3-bucket> <input-dir> <output-dir>");
+            logger.error("Usage:java SearchablePDF <s3-bucket> <input-dir> <output-dir> <resolution>");
             System.exit(1);
         }
         if (!Files.isDirectory(Paths.get(args[2]))) {
@@ -23,15 +23,16 @@ public class SearchablePDF {
             System.exit(1);
         }
         SearchablePDFFromLocalFile localPdf = new SearchablePDFFromLocalFile();
+        Integer resolution = args[3] == null ? 300 : Integer.parseInt(args[3]);
         try (Stream<Path> files = Files.list(Paths.get(args[1]))) {
             files.forEach(p ->
                     {
                         if (p.getFileName().toString().toLowerCase(Locale.ROOT).endsWith("pdf")) {
                             try {
-                                localPdf.run(args[0], p, Paths.get(args[2], p.getFileName().toString()));
+                                localPdf.run(args[0], p, Paths.get(args[2], p.getFileName().toString()),resolution);
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                logger.error("Exception during textract",e);
+                                logger.error("Exception during textract", e);
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
                                 logger.error("Exception during textract");

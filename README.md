@@ -18,5 +18,5 @@ Copies pdf files in the source directory to s3 bucket then executes textract job
 
 
 ```shell
-   java -jar searchable-pdf-1.0.jar s3-bucket-name source-directory output-directory
+   java -jar searchable-pdf-1.0.jar s3-bucket-name source-directory output-directory resolution
 ```

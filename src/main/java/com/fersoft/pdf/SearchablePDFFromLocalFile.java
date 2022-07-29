@@ -29,10 +29,10 @@ import java.util.concurrent.TimeUnit;
 public class SearchablePDFFromLocalFile {
     private static final Logger logger = LoggerFactory.getLogger(SearchablePDFFromLocalFile.class);
 
-    public void run(String bucket, Path inputFile, Path outputFile) throws IOException, InterruptedException {
+    public void run(String bucket, Path inputFile, Path outputFile, Integer resolution) throws IOException, InterruptedException {
         logger.info("Generating searchable pdf from {} to directory {} , bucket {}", inputFile, outputFile, bucket);
         uploadFileToS3(bucket, inputFile);
-        PDFDocument pdfDocument = addTextToPDF(bucket, inputFile);
+        PDFDocument pdfDocument = addTextToPDF(bucket, inputFile, resolution);
         savePdfToFile(pdfDocument, outputFile);
         deleteFileFromS3(bucket, inputFile);
         logger.info("Generated searchable pdf: {} ", outputFile);
@@ -51,7 +51,7 @@ public class SearchablePDFFromLocalFile {
         }
     }
 
-    private PDFDocument addTextToPDF(String bucket, Path inputFile) throws InterruptedException, IOException {
+    private PDFDocument addTextToPDF(String bucket, Path inputFile, Integer resolution) throws InterruptedException, IOException {
         List<ArrayList<TextLine>> linesInPages = extractText(bucket, inputFile.getFileName().toString());
         //Create new PDF document
         PDFDocument pdfDocument = new PDFDocument();
@@ -61,7 +61,7 @@ public class SearchablePDFFromLocalFile {
         PDFRenderer pdfRenderer = new PDFRenderer(inputDocument);
 
         for (int page = 0; page < inputDocument.getNumberOfPages(); ++page) {
-            BufferedImage image = pdfRenderer.renderImageWithDPI(page, 300, org.apache.pdfbox.rendering.ImageType.RGB);
+            BufferedImage image = pdfRenderer.renderImageWithDPI(page, resolution, org.apache.pdfbox.rendering.ImageType.RGB);
             pdfDocument.addPage(image, ImageType.JPEG, linesInPages.get(page));
             logger.info("Processed page index: {}", page);
         }
